@@ -3,8 +3,6 @@ export default class Display {
     this.canvas = {
       el: null,
       context: null,
-      width: 500,
-      height: 500
     };
     this.buffer = {
       el: null,
@@ -19,15 +17,15 @@ export default class Display {
   }
 
   initCanvas() {
-    this.canvas.el = document.createElement('canvas');
-    this.canvas.context = this.canvas.el.getContext('2d', { alpha: false, desynchronized: false });
-    this.canvas.el.width = this.canvas.width;
-    this.canvas.el.height = this.canvas.height;
+    const canavsEl = document.createElement('canvas');
+    this.canvas.el = canavsEl;
+    this.canvas.context = canavsEl.getContext('2d', { alpha: false, desynchronized: false });
   }
 
   initBuffer() {
-    this.buffer.el = document.createElement('canvas');
-    this.canvas.context = this.buffer.el.getContext('2d', { alpha: false, desynchronized: false });
+    const canavsEl = document.createElement('canvas');
+    this.buffer.el = canavsEl;
+    this.buffer.context = canavsEl.getContext('2d', { alpha: false, desynchronized: false });
   }
 
   init() {
