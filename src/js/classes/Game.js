@@ -55,6 +55,21 @@ export default class Game {
         this.display.canvas.context.drawImage(this.display.buffer.el, 0, 0);
     }
 
+    resize() {
+        let height = document.documentElement.clientHeight;
+        let width  = document.documentElement.clientWidth;
+        const displayCanvas = this.display.canvas.el;
+
+        if (width / height < this.levels[this.activeLevelIndex].width_height_ratio) {
+            height = Math.floor(width  / this.levels[this.activeLevelIndex].width_height_ratio);
+        } else {
+            width  = Math.floor(height * this.levels[this.activeLevelIndex].width_height_ratio);
+        }
+
+        displayCanvas.style.height = height + 'px';
+        displayCanvas.style.width  = width  + 'px';
+    }
+
     init() {
         const bufferCanvas = this.display.buffer.el;
         const bufferContext = this.display.buffer.context;
@@ -69,5 +84,7 @@ export default class Game {
 
         this.renderTiles();
         this.renderDisplay();
+
+        this.resize();
     }
 }

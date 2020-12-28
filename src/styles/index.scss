@@ -4,4 +4,31 @@
 }
 
 @import 'variables';
-@import 'scaffolding';
+
+html {
+    font-size: $font-size;
+    font-family: $font-family;
+    color: $font-color;
+    max-width: $page-width;
+    line-height: 1.4;
+  }
+  
+  body {
+    margin: 0;
+    width: 100vw;
+  }
+  
+  #root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    align-self: center;
+    height: 100vh;
+  }
+  
+  canvas {
+      image-rendering: pixelated;
+      image-rendering:-moz-crisp-edges;
+  }
+  

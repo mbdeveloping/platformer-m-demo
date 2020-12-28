@@ -12,3 +12,6 @@ const display = new Display();
 display.insertCanvasIntoDOM('#root');
 
 const game = new Game(display);
+
+// Events
+window.addEventListener('resize', () => game.resize());
