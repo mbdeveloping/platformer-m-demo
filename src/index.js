@@ -2,7 +2,7 @@
 // import webpackLogo from './images/webpack-logo.svg';
 
 // Test import of a JavaScript function
-import Display from './js/display';
+import Display from './js/Display';
 
 // Test import of styles
 import './styles/index.scss';
