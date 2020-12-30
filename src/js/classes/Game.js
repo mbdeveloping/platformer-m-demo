@@ -86,5 +86,16 @@ export default class Game {
         this.renderDisplay();
 
         this.resize();
+
+        //tt
+        // displayContext.fillRect(50, 50, 12, 12);
+    }
+
+    update() {
+        // console.log('Game is updating');
+    }
+
+    render() {
+        // console.log('Game is rendering');
     }
 }

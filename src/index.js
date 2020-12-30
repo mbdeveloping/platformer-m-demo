@@ -3,6 +3,7 @@
 
 // Test import of a JavaScript function
 import Display from './js/classes/Display';
+import Engine from './js/classes/Engine';
 import Game from './js/classes/Game';
 
 // Test import of styles
@@ -12,6 +13,9 @@ const display = new Display();
 display.insertCanvasIntoDOM('#root');
 
 const game = new Game(display);
+
+const engine = new Engine();
+engine.start(game.update, game.render);
 
 // Events
 window.addEventListener('resize', () => game.resize());
