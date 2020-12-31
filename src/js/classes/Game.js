@@ -1,6 +1,12 @@
+import Player from "./Player";
+
 export default class Game {
     constructor(display) {
         this.display = display,
+        this.bufferCanvas = this.display.buffer.el,
+        this.bufferContext = this.display.buffer.context,
+        this.displayCanvas = this.display.canvas.el,
+        this.displayContext = this.display.canvas.context,
         this.tileSize = 16,
         this.tiles = {
             0: { color:'#d8f4f4' }, // sky
@@ -32,33 +38,32 @@ export default class Game {
               },
         ],
         this.activeLevelIndex = 0,
+        this.player = new Player(),
         this.init()
     }
 
     renderTiles() {
         let map_index = 0;
-        const bufferContext = this.display.buffer.context;
 
         for (let top = 0; top < this.levels[this.activeLevelIndex].height; top += this.tileSize) {
                 for (let left = 0; left < this.levels[this.activeLevelIndex].width; left += this.tileSize) {
                 const tile_value = this.levels[this.activeLevelIndex].tiles[map_index];
                 const tile = this.tiles[tile_value];
                 
-                bufferContext.fillStyle = tile.color;
-                bufferContext.fillRect(left, top, this.tileSize, this.tileSize);
+                this.bufferContext.fillStyle = tile.color;
+                this.bufferContext.fillRect(left, top, this.tileSize, this.tileSize);
                 map_index ++;
             }
         }
     }
 
     renderDisplay() {
-        this.display.canvas.context.drawImage(this.display.buffer.el, 0, 0);
+        this.displayContext.drawImage(this.bufferCanvas, 0, 0);
     }
 
     resize() {
         let height = document.documentElement.clientHeight;
         let width  = document.documentElement.clientWidth;
-        const displayCanvas = this.display.canvas.el;
 
         if (width / height < this.levels[this.activeLevelIndex].width_height_ratio) {
             height = Math.floor(width  / this.levels[this.activeLevelIndex].width_height_ratio);
@@ -66,29 +71,21 @@ export default class Game {
             width  = Math.floor(height * this.levels[this.activeLevelIndex].width_height_ratio);
         }
 
-        displayCanvas.style.height = height + 'px';
-        displayCanvas.style.width  = width  + 'px';
+        this.displayCanvas.style.height = height + 'px';
+        this.displayCanvas.style.width  = width  + 'px';
     }
 
     init() {
-        const bufferCanvas = this.display.buffer.el;
-        const bufferContext = this.display.buffer.context;
-        const displayCanvas = this.display.canvas.el;
-        const displayContext = this.display.canvas.context;
+        this.bufferCanvas.width  = this.displayCanvas.width  = this.levels[this.activeLevelIndex].width;
+        this.bufferCanvas.height = this.displayCanvas.height = this.levels[this.activeLevelIndex].height;
 
-        bufferCanvas.width  = displayCanvas.width  = this.levels[this.activeLevelIndex].width;
-        bufferCanvas.height = displayCanvas.height = this.levels[this.activeLevelIndex].height;
-
-        bufferContext.imageSmoothingEnabled = false;
-        displayContext.imageSmoothingEnabled = false;
+        this.bufferContext.imageSmoothingEnabled = false;
+        this.displayContext.imageSmoothingEnabled = false;
 
         this.renderTiles();
         this.renderDisplay();
 
         this.resize();
-
-        //tt
-        // displayContext.fillRect(50, 50, 12, 12);
     }
 
     update() {
@@ -97,5 +94,6 @@ export default class Game {
 
     render() {
         // console.log('Game is rendering');
+        this.player.render(this.displayContext);
     }
 }

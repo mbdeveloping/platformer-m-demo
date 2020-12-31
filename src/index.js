@@ -14,8 +14,9 @@ display.insertCanvasIntoDOM('#root');
 
 const game = new Game(display);
 
-const engine = new Engine();
-engine.start(game.update, game.render);
+const engine = new Engine(game);
+// engine.start(game.update, game.render);
+engine.start();
 
 // Events
 window.addEventListener('resize', () => game.resize());
