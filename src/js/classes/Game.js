@@ -55,13 +55,13 @@ export default class Game {
     }
 
     renderDisplay() {
-        this.display.canvas.context.drawImage(this.levelBuffer.el, 0, 0);
+        this.display.context.drawImage(this.levelBuffer.el, 0, 0);
     }
 
     resize() {
         let height = document.documentElement.clientHeight;
         let width  = document.documentElement.clientWidth;
-        const displayCanvas = this.display.canvas.el;
+        const displayCanvas = this.display.el;
 
         if (width / height < this.levels[this.activeLevelIndex].width_height_ratio) {
             height = Math.floor(width / this.levels[this.activeLevelIndex].width_height_ratio);
@@ -76,8 +76,8 @@ export default class Game {
     init() {
         const levelBuffer = this.levelBuffer.el;
         const levelBufferCtx = this.levelBuffer.context;
-        const displayCanvas = this.display.canvas.el;
-        const displayContext = this.display.canvas.context;
+        const displayCanvas = this.display.el;
+        const displayContext = this.display.context;
 
         levelBuffer.width  = displayCanvas.width  = this.levels[this.activeLevelIndex].width;
         levelBuffer.height = displayCanvas.height = this.levels[this.activeLevelIndex].height;

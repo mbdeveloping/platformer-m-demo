@@ -1,9 +1,7 @@
 export default class Display {
     constructor() {
-        this.canvas = {
-            el: null,
-            context: null,
-        };
+        this.el = null,
+        this.context = null,
         this.init();
     }
 
@@ -13,13 +11,13 @@ export default class Display {
      */
     insertCanvasIntoDOM(containerSelector) {
         const container = document.querySelector(containerSelector);
-        container.append(this.canvas.el);
+        container.append(this.el);
     }
 
     initCanvas() {
         const canavsEl = document.createElement('canvas');
-        this.canvas.el = canavsEl;
-        this.canvas.context = canavsEl.getContext('2d', { alpha: false, desynchronized: false });
+        this.el = canavsEl;
+        this.context = canavsEl.getContext('2d', { alpha: false, desynchronized: false });
     }
 
     init() {
