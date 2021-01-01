@@ -11,12 +11,13 @@ export default class Game {
         this.init()
     }
 
-    renderDisplay() {
+    renderLevel() {
         // @todo change this method to game camera which will show world (render tiles), follow player, etc
         this.display.context.drawImage(this.worlds[this.activeWorldIndex].levelBuffer.el, 0, 0);
     }
 
     resize() {
+        // resize browser screen/canvas
         let height = document.documentElement.clientHeight;
         let width  = document.documentElement.clientWidth;
         const displayCanvas = this.display.el;
@@ -47,8 +48,8 @@ export default class Game {
         levelBufferCtx.imageSmoothingEnabled = false;
         displayContext.imageSmoothingEnabled = false;
 
-        world.renderTiles();
-        this.renderDisplay();
+        world.renderTilesIntoBuffer();
+        this.renderLevel();
 
         this.resize();
 
