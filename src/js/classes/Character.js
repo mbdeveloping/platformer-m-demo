@@ -8,24 +8,25 @@ export default class Character {
         this.position = new Vector(),
         this.velocity = new Vector(),
         this.speed = 5,
+        this.state = 'idleRight', //states: idleRight, idleLeft, moveRight, moveLeft, jumpRight, jumpLeft, attackRight, attackLeft, hurt
         this.jumpDistance = 20,
         this.health = 100,
         this.isGrounded = false
     }
 
-    get left() { 
+    getLeft() { 
         return this.position.x;
     }
 
-    get right() {
+    getRight() {
         return this.position.x + this.width;
     }
 
-    get top() {
+    getTop() {
         return this.position.y;
     }
 
-    get bottom() {
+    getBottom() {
         return this.position.y + this.height;
     }
 
@@ -47,6 +48,7 @@ export default class Character {
 
     jump() {
         console.log('jumping!');
+
         if (this.velocity.y === 0 && this.isGrounded) {
             this.isGrounded = false;
             this.velocity.setY(-this.jumpDistance);

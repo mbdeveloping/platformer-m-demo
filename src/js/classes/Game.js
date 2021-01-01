@@ -1,12 +1,9 @@
-import Player from "./Player";
+import Buffer from './Buffer';
 
 export default class Game {
     constructor(display) {
         this.display = display,
-        this.bufferCanvas = this.display.buffer.el,
-        this.bufferContext = this.display.buffer.context,
-        this.displayCanvas = this.display.canvas.el,
-        this.displayContext = this.display.canvas.context,
+        this.levelBuffer = new Buffer();
         this.tileSize = 16,
         this.tiles = {
             0: { color:'#d8f4f4' }, // sky
@@ -38,62 +35,70 @@ export default class Game {
               },
         ],
         this.activeLevelIndex = 0,
-        this.player = new Player(),
         this.init()
     }
 
     renderTiles() {
         let map_index = 0;
+        const levelBufferCtx = this.levelBuffer.context;
 
         for (let top = 0; top < this.levels[this.activeLevelIndex].height; top += this.tileSize) {
                 for (let left = 0; left < this.levels[this.activeLevelIndex].width; left += this.tileSize) {
                 const tile_value = this.levels[this.activeLevelIndex].tiles[map_index];
                 const tile = this.tiles[tile_value];
                 
-                this.bufferContext.fillStyle = tile.color;
-                this.bufferContext.fillRect(left, top, this.tileSize, this.tileSize);
+                levelBufferCtx.fillStyle = tile.color;
+                levelBufferCtx.fillRect(left, top, this.tileSize, this.tileSize);
                 map_index ++;
             }
         }
     }
 
     renderDisplay() {
-        this.displayContext.drawImage(this.bufferCanvas, 0, 0);
+        this.display.canvas.context.drawImage(this.levelBuffer.el, 0, 0);
     }
 
     resize() {
         let height = document.documentElement.clientHeight;
         let width  = document.documentElement.clientWidth;
+        const displayCanvas = this.display.canvas.el;
 
         if (width / height < this.levels[this.activeLevelIndex].width_height_ratio) {
-            height = Math.floor(width  / this.levels[this.activeLevelIndex].width_height_ratio);
+            height = Math.floor(width / this.levels[this.activeLevelIndex].width_height_ratio);
         } else {
             width  = Math.floor(height * this.levels[this.activeLevelIndex].width_height_ratio);
         }
 
-        this.displayCanvas.style.height = height + 'px';
-        this.displayCanvas.style.width  = width  + 'px';
+        displayCanvas.style.height = height + 'px';
+        displayCanvas.style.width  = width  + 'px';
     }
 
     init() {
-        this.bufferCanvas.width  = this.displayCanvas.width  = this.levels[this.activeLevelIndex].width;
-        this.bufferCanvas.height = this.displayCanvas.height = this.levels[this.activeLevelIndex].height;
+        const levelBuffer = this.levelBuffer.el;
+        const levelBufferCtx = this.levelBuffer.context;
+        const displayCanvas = this.display.canvas.el;
+        const displayContext = this.display.canvas.context;
 
-        this.bufferContext.imageSmoothingEnabled = false;
-        this.displayContext.imageSmoothingEnabled = false;
+        levelBuffer.width  = displayCanvas.width  = this.levels[this.activeLevelIndex].width;
+        levelBuffer.height = displayCanvas.height = this.levels[this.activeLevelIndex].height;
+
+        levelBufferCtx.imageSmoothingEnabled = false;
+        displayContext.imageSmoothingEnabled = false;
 
         this.renderTiles();
         this.renderDisplay();
 
         this.resize();
+
+        //tt
+        // displayContext.fillRect(50, 50, 12, 12);
     }
 
     update() {
-        // console.log('Game is updating');
+
     }
 
     render() {
-        // console.log('Game is rendering');
-        this.player.render(this.displayContext);
+        // this.player.render();
     }
 }
