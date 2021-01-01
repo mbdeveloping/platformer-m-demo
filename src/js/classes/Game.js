@@ -21,12 +21,11 @@ export default class Game {
         let height = document.documentElement.clientHeight;
         let width  = document.documentElement.clientWidth;
         const displayCanvas = this.display.el;
-        const world = this.worlds[this.activeWorldIndex];
 
-        if (width / height < world.levels[world.activeLevelIndex].ratio) {
-            height = Math.floor(width / world.levels[world.activeLevelIndex].ratio);
+        if (width / height < this.display.ratio) {
+            height = Math.floor(width / this.display.ratio);
         } else {
-            width = Math.floor(height * world.levels[world.activeLevelIndex].ratio);
+            width = Math.floor(height * this.display.ratio);
         }
 
         displayCanvas.style.height = height + 'px';
@@ -42,8 +41,8 @@ export default class Game {
         const displayCanvas = this.display.el;
         const displayContext = this.display.context;
 
-        levelBuffer.width = displayCanvas.width = world.levels[world.activeLevelIndex].width;
-        levelBuffer.height = displayCanvas.height = world.levels[world.activeLevelIndex].height;
+        levelBuffer.width = displayCanvas.width = this.display.width;
+        levelBuffer.height = displayCanvas.height = this.display.height;
 
         levelBufferCtx.imageSmoothingEnabled = false;
         displayContext.imageSmoothingEnabled = false;
@@ -54,7 +53,7 @@ export default class Game {
         this.resize();
 
         //tt
-        // displayContext.fillRect(50, 50, 12, 12);
+        displayContext.fillRect(50, 50, 12, 12);
     }
 
     update() {

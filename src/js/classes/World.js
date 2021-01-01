@@ -7,11 +7,6 @@ export default class World {
         this.levels = [ // world places
             // level 1
             {
-                columns: 16,
-                rows: 14,
-                height: 14 * this.tileSize,
-                width: 16 * this.tileSize,
-                ratio: 16 / 14,
                 tiles: {
                     0: { color:'#d8f4f4' }, // sky
                     1: { color:'#ffffff' }, // cloud

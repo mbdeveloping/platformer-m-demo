@@ -2,6 +2,9 @@ export default class Display {
     constructor() {
         this.el = null,
         this.context = null,
+        this.height = 224, // 14 * tileSize (16)
+        this.width = 256, // 16 * tileSize (16)
+        this.ratio = 16 / 14,
         this.init();
     }
 
