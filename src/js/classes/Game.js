@@ -1,5 +1,6 @@
-import Camera from './Camera';
 import World from './World';
+import Player from './Player';
+import Camera from './Camera';
 
 export default class Game {
     constructor(display) {
@@ -9,6 +10,7 @@ export default class Game {
             new World('Earth', this.tileSize),
         ],
         this.activeWorldIndex = 0,
+        this.player = new Player(),
         this.camera = new Camera(0, 0, this.display.width, this.display.height, this.worlds[this.activeWorldIndex]),
         this.init()
     }
@@ -56,6 +58,7 @@ export default class Game {
     }
 
     update() {
+        this.player.update();
         this.camera.update();
     }
 
@@ -63,9 +66,6 @@ export default class Game {
         const displayContext = this.display.context;
 
         this.renderLevel(displayContext);
-
-        //tt
-        displayContext.fillStyle = 'black';
-        displayContext.fillRect(50, 50, 12, 12);
+        this.player.render(displayContext);
     }
 }

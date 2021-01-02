@@ -66,7 +66,7 @@ export default class Character {
     }
 
     render(context) {
-        context.fillStyle = this.color;
+        context.fillStyle = 'black';
         context.fillRect(this.position.x, this.position.y, this.width, this.height);
     }
 }
