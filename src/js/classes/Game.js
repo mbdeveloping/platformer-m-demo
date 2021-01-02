@@ -15,7 +15,7 @@ export default class Game {
 
     renderLevel(context) {
         const world = this.worlds[this.activeWorldIndex];
-        
+
         for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
             for (let x = this.camera.xMin; x < this.camera.xMax - 1; x++) {
                 let renderX = (x * this.tileSize);
@@ -45,25 +45,12 @@ export default class Game {
     }
 
     init() {
-        // const world = this.worlds[this.activeWorldIndex];
-
-        // const levelBuffer = world.levelBuffer.el;
-        // const levelBufferCtx = world.levelBuffer.context;
-
         const displayCanvas = this.display.el;
         const displayContext = this.display.context;
 
         displayCanvas.width = this.display.width;
         displayCanvas.height = this.display.height;
-
-        // levelBuffer.width = world.levels[world.activeLevelIndex].tileMap[0].length * this.tileSize; // @todo add width/height to the map
-        // levelBuffer.height = world.levels[world.activeLevelIndex].tileMap.length * this.tileSize;
-
-        // levelBufferCtx.imageSmoothingEnabled = false;
         displayContext.imageSmoothingEnabled = false;
-
-        // world.renderTilesIntoBuffer();
-        // this.renderLevel();
 
         this.resize();
     }
