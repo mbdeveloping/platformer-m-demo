@@ -1,3 +1,4 @@
+import Camera from './Camera';
 import World from './World';
 
 export default class Game {
@@ -8,12 +9,23 @@ export default class Game {
             new World('Earth', this.tileSize),
         ],
         this.activeWorldIndex = 0,
+        this.camera = new Camera(0, 0, this.display.width, this.display.height, this.worlds[this.activeWorldIndex]),
         this.init()
     }
 
-    renderLevel() {
-        // @todo change this method to game camera which will show world (render tiles), follow player, etc
-        this.display.context.drawImage(this.worlds[this.activeWorldIndex].levelBuffer.el, 0, 0);
+    renderLevel(context) {
+        const world = this.worlds[this.activeWorldIndex];
+        
+        for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
+            for (let x = this.camera.xMin; x < this.camera.xMax - 1; x++) {
+                let renderX = (x * this.tileSize);
+                let renderY = (y * this.tileSize);
+                const tile = world.levels[world.activeLevelIndex].tileMap[y][x];
+
+                context.fillStyle = world.levels[world.activeLevelIndex].tiles[tile].color;
+                context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+            }
+        }
     }
 
     resize() {
@@ -29,38 +41,44 @@ export default class Game {
         }
 
         displayCanvas.style.height = height + 'px';
-        displayCanvas.style.width = width  + 'px';
+        displayCanvas.style.width = width + 'px';
     }
 
     init() {
-        const world = this.worlds[this.activeWorldIndex];
+        // const world = this.worlds[this.activeWorldIndex];
 
-        const levelBuffer = world.levelBuffer.el;
-        const levelBufferCtx = world.levelBuffer.context;
+        // const levelBuffer = world.levelBuffer.el;
+        // const levelBufferCtx = world.levelBuffer.context;
 
         const displayCanvas = this.display.el;
         const displayContext = this.display.context;
 
-        levelBuffer.width = displayCanvas.width = this.display.width;
-        levelBuffer.height = displayCanvas.height = this.display.height;
+        displayCanvas.width = this.display.width;
+        displayCanvas.height = this.display.height;
 
-        levelBufferCtx.imageSmoothingEnabled = false;
+        // levelBuffer.width = world.levels[world.activeLevelIndex].tileMap[0].length * this.tileSize; // @todo add width/height to the map
+        // levelBuffer.height = world.levels[world.activeLevelIndex].tileMap.length * this.tileSize;
+
+        // levelBufferCtx.imageSmoothingEnabled = false;
         displayContext.imageSmoothingEnabled = false;
 
-        world.renderTilesIntoBuffer();
-        this.renderLevel();
+        // world.renderTilesIntoBuffer();
+        // this.renderLevel();
 
         this.resize();
-
-        //tt
-        displayContext.fillRect(50, 50, 12, 12);
     }
 
     update() {
-
+        this.camera.update();
     }
 
     render() {
-        // this.player.render();
+        const displayContext = this.display.context;
+
+        this.renderLevel(displayContext);
+
+        //tt
+        displayContext.fillStyle = 'black';
+        displayContext.fillRect(50, 50, 12, 12);
     }
 }
