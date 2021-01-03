@@ -1,7 +1,7 @@
 export default class World {
     constructor(worldNanme, tileSize) {
         this.name = worldNanme ?? 'Earth',
-        this.tileSize = tileSize,
+        this.tileSize = 16,
         this.levels = [ // world places
             // level 1
             {
@@ -32,6 +32,10 @@ export default class World {
             // ...
         ],
         this.activeLevelIndex = 0
+    }
+
+    getTile(x, y) {
+        return (this.levels[this.activeLevelIndex].tileMap[y] && this.levels[this.activeLevelIndex].tileMap[y][x]) ? this.levels[this.activeLevelIndex].tileMap[y][x] : 0;
     }
 
     renderTilesIntoBuffer() {

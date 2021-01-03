@@ -5,13 +5,12 @@ import Camera from './Camera';
 export default class Game {
     constructor(display) {
         this.display = display,
-        this.tileSize = 16,
         this.worlds = [
-            new World('Earth', this.tileSize),
+            new World('Earth'),
         ],
         this.activeWorldIndex = 0,
-        this.player = new Player(),
         this.camera = new Camera(0, 0, this.display.width, this.display.height, this.worlds[this.activeWorldIndex]),
+        this.player = new Player(),
         this.init()
     }
 
@@ -19,13 +18,13 @@ export default class Game {
         const world = this.worlds[this.activeWorldIndex];
 
         for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
-            for (let x = this.camera.xMin; x < this.camera.xMax - 1; x++) {
-                let renderX = (x * this.tileSize);
-                let renderY = (y * this.tileSize);
-                const tile = world.levels[world.activeLevelIndex].tileMap[y][x];
+            for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
+                let renderX = (x * world.tileSize) - this.camera.position.x;
+                let renderY = (y * world.tileSize) - this.camera.position.y;
+                const tile = world.getTile(x, y);
 
                 context.fillStyle = world.levels[world.activeLevelIndex].tiles[tile].color;
-                context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+                context.fillRect(renderX, renderY, world.tileSize, world.tileSize);
             }
         }
     }
@@ -58,7 +57,9 @@ export default class Game {
     }
 
     update() {
+        // this.player.moveRight();
         this.player.update();
+        // this.camera.follow(this.player.position.x, this.player.position.y);
         this.camera.update();
     }
 

@@ -7,7 +7,7 @@ export default class Character {
         this.height = 12,
         this.position = new Vector(),
         this.velocity = new Vector(),
-        this.speed = 5,
+        this.speed = 1,
         this.state = 'idleRight', //states: idleRight, idleLeft, moveRight, moveLeft, jumpRight, jumpLeft, attackRight, attackLeft, hurt
         this.jumpDistance = 20,
         this.health = 100,
