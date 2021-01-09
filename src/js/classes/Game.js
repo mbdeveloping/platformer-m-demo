@@ -3,19 +3,21 @@ import Player from './Player';
 import Camera from './Camera';
 
 export default class Game {
-    constructor(display) {
+    constructor(display, controller) {
         this.display = display,
+        this.controller = controller,
+        this.player = new Player(),
         this.worlds = [
-            new World('Earth'),
+            new World('Earth', this.player),
         ],
         this.activeWorldIndex = 0,
-        this.camera = new Camera(0, 0, this.display.width, this.display.height, this.worlds[this.activeWorldIndex]),
-        this.player = new Player(),
+        this.activeWorld = this.worlds[this.activeWorldIndex],
+        this.camera = new Camera(0, 0, this.display.width, this.display.height, this.activeWorld),
         this.init()
     }
 
     renderLevel(context) {
-        const world = this.worlds[this.activeWorldIndex];
+        const world = this.activeWorld;
 
         for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
             for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
@@ -56,9 +58,25 @@ export default class Game {
         this.resize();
     }
 
-    update() {
-        // this.player.moveRight();
-        this.player.update();
+    update(step, time) {
+        //movements
+        if (this.controller.left.active) {
+            this.activeWorld.player.moveLeft();
+        } else if (this.controller.right.active) {
+            this.activeWorld.player.moveRight();
+        } else if (this.controller.up.active) {
+            this.activeWorld.player.moveUp();
+        } else if (this.controller.down.active) {
+            this.activeWorld.player.moveDown();
+        } else {
+            this.activeWorld.player.stop();
+        }
+
+        if (this.controller.jump.active) {
+            this.activeWorld.player.jump();
+        }
+
+        this.activeWorld.update();
         // this.camera.follow(this.player.position.x, this.player.position.y);
         this.camera.update();
     }
@@ -67,6 +85,6 @@ export default class Game {
         const displayContext = this.display.context;
 
         this.renderLevel(displayContext);
-        this.player.render(displayContext);
+        this.activeWorld.render(displayContext);
     }
 }

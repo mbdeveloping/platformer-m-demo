@@ -1,7 +1,9 @@
 export default class World {
-    constructor(worldNanme, tileSize) {
+    constructor(worldNanme, player) {
         this.name = worldNanme ?? 'Earth',
         this.tileSize = 16,
+        this.friction = .8,
+        this.gravity = 1,
         this.levels = [ // world places
             // level 1
             {
@@ -31,7 +33,8 @@ export default class World {
             // level 2
             // ...
         ],
-        this.activeLevelIndex = 0
+        this.activeLevelIndex = 0,
+        this.player = player
     }
 
     getTile(x, y) {
@@ -51,10 +54,25 @@ export default class World {
         // });
     }
 
-    update() {
-
+    checkWorldBoundriesCollision(obj) {
+        if (obj.position.x <= 0) {
+            obj.velocity.x = 0;
+            obj.position.x = 0;
+        }
+        if (obj.position.y + obj.height >= 224) {
+            obj.velocity.y = 0;
+            obj.position.y = 224 - obj.height;
+            obj.isGrounded = true;
+        }
     }
 
-    render () {
+    update() {
+        this.player.update(this.gravity, this.friction);
+
+        this.checkWorldBoundriesCollision(this.player);
+    }
+
+    render (context) { 
+        this.player.render(context);
     }
 }

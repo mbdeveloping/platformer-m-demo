@@ -4,11 +4,11 @@ export default class Vector {
         this.y = y
     }
 
-    get getX() {
+    getX() {
         return this.x;
     }
 
-    get getY() {
+    getY() {
         return this.y;
     }
 
