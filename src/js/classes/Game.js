@@ -8,7 +8,7 @@ export default class Game {
         this.controller = controller,
         this.player = new Player(),
         this.worlds = [
-            new World('Earth', this.player),
+            new World('Earth'),
         ],
         this.activeWorldIndex = 0,
         this.activeWorld = this.worlds[this.activeWorldIndex],
@@ -16,20 +16,21 @@ export default class Game {
         this.init()
     }
 
-    renderLevel(context) {
-        const world = this.activeWorld;
+    // renderWorld(context) {
+    //     const world = this.activeWorld;
 
-        for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
-            for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
-                let renderX = (x * world.tileSize) - this.camera.position.x;
-                let renderY = (y * world.tileSize) - this.camera.position.y;
-                const tile = world.getTile(x, y);
+    //     for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
+    //         for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
+    //             let renderX = (x * world.tileSize) - this.camera.position.x;
+    //             let renderY = (y * world.tileSize) - this.camera.position.y;
+    //             const tile = world.getTile(x, y);
 
-                context.fillStyle = world.levels[world.activeLevelIndex].tiles[tile].color;
-                context.fillRect(renderX, renderY, world.tileSize, world.tileSize);
-            }
-        }
-    }
+    //             context.fillStyle = world.levels[world.activeLevelIndex].tiles[tile].color;
+    //             context.fillRect(renderX, renderY, world.tileSize, world.tileSize);
+    //         }
+    //     }
+    // }
+
 
     resize() {
         // resize browser screen/canvas
@@ -55,11 +56,13 @@ export default class Game {
         displayCanvas.height = this.display.height;
         displayContext.imageSmoothingEnabled = false;
 
+        this.activeWorld.addPlayer(this.player);
+        this.activeWorld.addCamera(this.camera);
+
         this.resize();
     }
-
-    update(step, time) {
-        //movements
+    
+    playerMovementChecks() {
         if (this.controller.left.active) {
             this.activeWorld.player.moveLeft();
         } else if (this.controller.right.active) {
@@ -75,16 +78,16 @@ export default class Game {
         if (this.controller.jump.active) {
             this.activeWorld.player.jump();
         }
+    }
 
+    update(step, time) {
+        this.playerMovementChecks();
         this.activeWorld.update();
-        // this.camera.follow(this.player.position.x, this.player.position.y);
-        this.camera.update();
     }
 
     render() {
         const displayContext = this.display.context;
 
-        this.renderLevel(displayContext);
         this.activeWorld.render(displayContext);
     }
 }

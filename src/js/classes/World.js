@@ -1,5 +1,5 @@
 export default class World {
-    constructor(worldNanme, player) {
+    constructor(worldNanme) {
         this.name = worldNanme ?? 'Earth',
         this.tileSize = 16,
         this.friction = .8,
@@ -11,7 +11,8 @@ export default class World {
                     0: { color:'#d8f4f4' }, // sky
                     1: { color:'#ffffff' }, // cloud
                     2: { color:'#3e611e' }, // grass
-                    3: { color:'#412823' }  // dirt
+                    3: { color:'#412823' },  // dirt
+                    4: { color:'#3e611e' }, // platform
                 },
                 tileMap: [
                             [0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,  0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,  0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0],
@@ -22,8 +23,8 @@ export default class World {
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0],
                             [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2],
                             [2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2],
@@ -34,26 +35,49 @@ export default class World {
             // ...
         ],
         this.activeLevelIndex = 0,
-        this.player = player
+        this.player = null,
+        this.camera = null
     }
 
     getTile(x, y) {
         return (this.levels[this.activeLevelIndex].tileMap[y] && this.levels[this.activeLevelIndex].tileMap[y][x]) ? this.levels[this.activeLevelIndex].tileMap[y][x] : 0;
     }
 
-    renderTilesIntoBuffer() {
-        // this.levels[this.activeLevelIndex].tileMap.forEach((row, rowIndex) => {
-        //     row.forEach((col, colIndex) => {
-        //         const tile = this.levels[this.activeLevelIndex].tiles[col];
-        //         let top = rowIndex * this.tileSize;
-        //         let left = colIndex * this.tileSize;
+    // renderTilesIntoBuffer() {
+    //     this.levels[this.activeLevelIndex].tileMap.forEach((row, rowIndex) => {
+    //         row.forEach((col, colIndex) => {
+    //             const tile = this.levels[this.activeLevelIndex].tiles[col];
+    //             let top = rowIndex * this.tileSize;
+    //             let left = colIndex * this.tileSize;
 
-        //         this.levelBuffer.context.fillStyle = tile.color;
-        //         this.levelBuffer.context.fillRect(left, top, this.tileSize, this.tileSize);
-        //     });
-        // });
+    //             this.levelBuffer.context.fillStyle = tile.color;
+    //             this.levelBuffer.context.fillRect(left, top, this.tileSize, this.tileSize);
+    //         });
+    //     });
+    // }
+
+    renderLevel(context) {
+        for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
+            for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
+                let renderX = (x * this.tileSize) - this.camera.position.x;
+                let renderY = (y * this.tileSize) - this.camera.position.y;
+                const tile = this.getTile(x, y);
+
+                context.fillStyle = this.levels[this.activeLevelIndex].tiles[tile].color;
+                context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+            }
+        }
     }
 
+    addPlayer(playerObj) {
+        this.player = playerObj;
+    }
+
+    addCamera(cameraObj) {
+        this.camera = cameraObj;
+    }
+
+    // test
     checkWorldBoundriesCollision(obj) {
         if (obj.position.x <= 0) {
             obj.velocity.x = 0;
@@ -68,11 +92,13 @@ export default class World {
 
     update() {
         this.player.update(this.gravity, this.friction);
-
         this.checkWorldBoundriesCollision(this.player);
+
+        this.camera.update();
     }
 
     render (context) { 
+        this.renderLevel(context);
         this.player.render(context);
     }
 }

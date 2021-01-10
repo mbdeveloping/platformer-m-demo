@@ -4,8 +4,8 @@ export default class Controller {
         this.right = { active: false },
         this.jump = { active: false },
         this.up = { active: false },
-        this.down = { active: false},
-        this.attack = { active: false}
+        this.down = { active: false },
+        this.attack = { active: false }
     }
 
     keyEvent(event) {
