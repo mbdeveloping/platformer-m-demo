@@ -1,11 +1,12 @@
 import Vector from './math/Vector';
 
 export default class Character {
-    constructor() {
+    constructor(posX, posY) {
         this.type = 'NPC',
         this.width = 12,
         this.height = 12,
-        this.position = new Vector(),
+        this.position = new Vector(posX, posY),
+        this.renderPosition = this.position,
         this.velocity = new Vector(),
         this.acceleration = new Vector(),
         this.velocityMax = { x: 2, y: 5 },
@@ -33,26 +34,27 @@ export default class Character {
     }
 
     moveLeft() {
+        this.state = 'moveLeft';
         this.acceleration.setX(-this.speed);
     }
 
     moveRight() {
+        this.state = 'moveRight';
         // this.velocity.setX(this.speed);
         this.acceleration.setX(this.speed);
     }
 
-    moveUp() {
-        // this.velocity.setY(-this.speed);
-        this.acceleration.setY(this.speed);
-    }
-
-    moveDown() {
-        this.acceleration.setY(this.speed);
-    }
-
     stop() {
+        if (this.state === 'moveRight' || this.state === 'idleRight') {
+            this.state = 'idleRight';
+        }
+
+        if (this.state === 'moveLeft' || this.state === 'idleLeft') {
+            this.state = 'idleLeft';
+        }
+        
         this.acceleration.setX(0);
-        this.acceleration.setY(0);
+        // this.acceleration.setY(0);
     }
 
     jump() {
@@ -73,22 +75,22 @@ export default class Character {
         this.velocity.y += gravity;
 
         // apply friction
-        this.velocity.x *= friction;
-        // this.velocity.y *= friction;
+        this.velocity.x *= 0.7;
 
         // update velocity
         this.velocity.x += this.acceleration.x;
         // this.velocity.y += this.acceleration.y;
 
-        if (Math.abs(this.velocity.x) > this.velocityMax.x)
-        this.velocity.x = this.velocityMax.x * Math.sign(this.velocity.x);
-    
-        // if (Math.abs(this.velocity.y) > this.velocityMax.y)
-        // this.velocity.y = this.velocityMax.y * Math.sign(this.velocity.y);
-
         // update position
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+
+        // console.log(this.acceleration.x);
+        // console.log(this.velocity.x);
+
+        // console.log(this.position.x);
+
+        console.log(this.state);
     }
 
     render(context) {

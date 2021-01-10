@@ -13,9 +13,15 @@ export default class Camera {
         this.yMax = null
     }
 
-    follow(x, y) {
-        this.position.x = x - this.width * 0.5;
-        this.position.y = y - this.height * 0.5;
+    follow(obj) {
+        if (obj.position.x > ((this.width * 0.5)) && this.position.x >= 0) {
+            obj.position.x = this.width / 2;
+            this.position.x += obj.velocity.x;
+
+            // console.log('tt');
+        }
+
+        // console.log(obj.velocity.x);
     }
 
     update() {
@@ -27,6 +33,12 @@ export default class Camera {
         // this.position.x += 1;
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+
+        // if (this.position.x < 0) {
+        //     this.position.x = 0;
+        // }
+
+        // console.log(this.position.x);
     }
 
     render(context) {

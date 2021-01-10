@@ -64,7 +64,8 @@ export default class World {
                 const tile = this.getTile(x, y);
 
                 context.fillStyle = this.levels[this.activeLevelIndex].tiles[tile].color;
-                context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+                // context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+                context.fillRect(Math.round(renderX), Math.round(renderY), this.tileSize, this.tileSize);
             }
         }
     }
@@ -95,6 +96,8 @@ export default class World {
         this.checkWorldBoundriesCollision(this.player);
 
         this.camera.update();
+
+        this.camera.follow(this.player);
     }
 
     render (context) { 

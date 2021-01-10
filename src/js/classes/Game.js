@@ -6,7 +6,7 @@ export default class Game {
     constructor(display, controller) {
         this.display = display,
         this.controller = controller,
-        this.player = new Player(),
+        this.player = new Player(0, 0),
         this.worlds = [
             new World('Earth'),
         ],
@@ -67,10 +67,6 @@ export default class Game {
             this.activeWorld.player.moveLeft();
         } else if (this.controller.right.active) {
             this.activeWorld.player.moveRight();
-        } else if (this.controller.up.active) {
-            this.activeWorld.player.moveUp();
-        } else if (this.controller.down.active) {
-            this.activeWorld.player.moveDown();
         } else {
             this.activeWorld.player.stop();
         }

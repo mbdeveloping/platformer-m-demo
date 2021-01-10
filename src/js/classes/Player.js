@@ -1,9 +1,8 @@
 import Character from "./Character";
 
 export default class Player extends Character {
-    constructor(camera) {
-        super(camera),
-        this.type = 'Player',
-        this.name = name
+    constructor(posX, posY) {
+        super(posX, posY),
+        this.type = 'Player'
     }
 }
