@@ -12,6 +12,7 @@ export default class Engine {
     }
 
     gameLoop() {
+        this.game.display.context.clearRect(0, 0, this.game.display.width, this.game.display.height);
         this.currentTime = this.timestamp();
         this.deltaTime = this.deltaTime + Math.min(1, (this.currentTime - this.lastTime) / 1000);
 

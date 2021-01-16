@@ -10,7 +10,7 @@ export default class Character {
         this.velocity = new Vector(),
         this.acceleration = new Vector(),
         this.velocityMax = { x: 2, y: 5 },
-        this.speed = .5,
+        this.speed = 1,
         this.state = 'idleRight', //states: idleRight, idleLeft, moveRight, moveLeft, jumpRight, jumpLeft, attackRight, attackLeft, hurt
         this.jumpDistance = 13,
         this.health = 100,
@@ -35,13 +35,22 @@ export default class Character {
 
     moveLeft() {
         this.state = 'moveLeft';
-        this.acceleration.setX(-this.speed);
+        this.velocity.setX(-this.speed);
     }
 
     moveRight() {
         this.state = 'moveRight';
-        // this.velocity.setX(this.speed);
-        this.acceleration.setX(this.speed);
+        this.velocity.setX(this.speed);
+    }
+
+    // Temp
+
+    moveUp() {
+        this.velocity.setY(-this.speed);
+    }
+
+    moveDown() {
+        this.velocity.setY(this.speed);
     }
 
     stop() {
@@ -53,8 +62,8 @@ export default class Character {
             this.state = 'idleLeft';
         }
         
-        this.acceleration.setX(0);
-        // this.acceleration.setY(0);
+        this.velocity.setX(0);
+        this.velocity.setY(0);
     }
 
     jump() {
@@ -70,38 +79,16 @@ export default class Character {
         console.log('attacking!');
     }
 
-    update(gravity, friction) {
-        // apply gravity
-        
-        if (!this.isGrounded) {
-            this.velocity.y += gravity;
-        }
-
-        // apply friction
-        // this.velocity.x *= friction;
-
-        // update velocity
-        this.velocity.x += this.acceleration.x;
-        // this.velocity.y += this.acceleration.y;
-
+    update(step, time) {
         // update position
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
-    
-
-        // console.log(this.acceleration.x);
-        console.log(this.velocity.x)
-        
-        // console.log(this.isGrounded);
-
         // console.log(this.position.x);
-
-        // console.log(this.state);
     }
 
-    render(context) {
-        context.fillStyle = 'black';
-        context.fillRect(Math.round(this.position.x), Math.round(this.position.y), this.width, this.height);
+    render(context, offsetX, offsetY) {
+        context.fillStyle = 'red';
+        context.fillRect((this.position.x - offsetX), (this.position.y - offsetY), this.width, this.height);
     }
 }
