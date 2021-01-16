@@ -72,10 +72,13 @@ export default class Character {
 
     update(gravity, friction) {
         // apply gravity
-        this.velocity.y += gravity;
+        
+        if (!this.isGrounded) {
+            this.velocity.y += gravity;
+        }
 
         // apply friction
-        this.velocity.x *= 0.7;
+        // this.velocity.x *= friction;
 
         // update velocity
         this.velocity.x += this.acceleration.x;
@@ -85,12 +88,16 @@ export default class Character {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
+    
+
         // console.log(this.acceleration.x);
-        // console.log(this.velocity.x);
+        console.log(this.velocity.x)
+        
+        // console.log(this.isGrounded);
 
         // console.log(this.position.x);
 
-        console.log(this.state);
+        // console.log(this.state);
     }
 
     render(context) {
