@@ -15,22 +15,6 @@ export default class Game {
         this.init()
     }
 
-    // renderWorld(context) {
-    //     const world = this.activeWorld;
-
-    //     for (let y = this.§a.yMin; y < this.camera.yMax; y++) {
-    //         for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
-    //             let renderX = (x * world.tileSize) - this.camera.position.x;
-    //             let renderY = (y * world.tileSize) - this.camera.position.y;
-    //             const tile = world.getTile(x, y);
-
-    //             context.fillStyle = world.levels[world.activeLevelIndex].tiles[tile].color;
-    //             context.fillRect(renderX, renderY, world.tileSize, world.tileSize);
-    //         }
-    //     }
-    // }
-
-
     resize() {
         // resize browser screen/canvas
         let height = document.documentElement.clientHeight;

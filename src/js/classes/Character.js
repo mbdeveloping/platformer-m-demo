@@ -10,7 +10,7 @@ export default class Character {
         this.velocity = new Vector(),
         this.acceleration = new Vector(),
         this.velocityMax = { x: 2, y: 5 },
-        this.speed = 1,
+        this.speed = 2,
         this.state = 'idleRight', //states: idleRight, idleLeft, moveRight, moveLeft, jumpRight, jumpLeft, attackRight, attackLeft, hurt
         this.jumpDistance = 13,
         this.health = 100,

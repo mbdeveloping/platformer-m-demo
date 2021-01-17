@@ -11,7 +11,7 @@ export default class World {
             // level 1
             {
                 width: 60, // units
-                height: 14, // units
+                height: 17, // units
                 tiles: {
                     0: { color:'#d8f4f4' }, // sky
                     1: { color:'#ffffff' }, // cloud
@@ -20,6 +20,9 @@ export default class World {
                     4: { color:'#3e611e' }, // platform
                 },
                 tileMap: [
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,  0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,  0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0],
                             [0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,  0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,  0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0],
                             [0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,  0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,  0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0],
@@ -42,29 +45,22 @@ export default class World {
         this.activeLevelIndex = 0,
         this.player = new Player(100, 200),
         this.camera = {
-            posX: 0,
-            posY: 0
-        },
-        this.offetX = null,
-        this.offetY = null
+            position: { x: null, y: null },
+            offset: { x: null, y: null },
+            draw: {
+                min: { x: null, y: null },
+                max: { x: null, y: null }
+            }
+        }
     }
 
     getTile(x, y) {
         return (this.levels[this.activeLevelIndex].tileMap[y] && this.levels[this.activeLevelIndex].tileMap[y][x]) ? this.levels[this.activeLevelIndex].tileMap[y][x] : 0;
     }
 
-    // renderTilesIntoBuffer() {
-    //     this.levels[this.activeLevelIndex].tileMap.forEach((row, rowIndex) => {
-    //         row.forEach((col, colIndex) => {
-    //             const tile = this.levels[this.activeLevelIndex].tiles[col];
-    //             let top = rowIndex * this.tileSize;
-    //             let left = colIndex * this.tileSize;
-
-    //             this.levelBuffer.context.fillStyle = tile.color;
-    //             this.levelBuffer.context.fillRect(left, top, this.tileSize, this.tileSize);
-    //         });
-    //     });
-    // }
+    setTile(x, y, tile) {
+        this.levels[this.activeLevelIndex].tileMap[y][x] = tile;
+    }
 
     // renderLevel(context) {
     //     for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
@@ -80,21 +76,32 @@ export default class World {
     //     }
     // }
 
+    // renderLevel(context) {
+    //     for (let y = 0; y < this.visibleTiles.y; y++) {
+    //         for (let x = 0; x < this.visibleTiles.x; x++) {
+    //             const tileID = this.getTile(x + this.camera.offset.x, y + this.camera.offset.y);
+    //             let renderX = (x * this.tileSize);
+    //             let renderY = (y * this.tileSize);
+
+    //             context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
+    //             context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+    //         }
+    //     }
+    // }
+
     renderLevel(context) {
-        for (let y = 0; y < this.visibleTiles.y; y++) {
-            for (let x = 0; x < this.visibleTiles.x; x++) {
-                const tileID = this.getTile(x + this.offetX, y + this.offetY);
-                let renderX = (x * this.tileSize);
-                let renderY = (y * this.tileSize);
+        for (let y = 0; y < this.visibleTiles.y + this.camera.offset.y; y++) {
+            for (let x = 0; x < this.visibleTiles.x + this.camera.offset.x; x++) {
+                // const tileID = this.getTile(x + this.camera.offset.x, y + this.camera.offset.y);
+                const tileID = this.getTile(x, y);
+                let renderX = (x * this.tileSize) - this.camera.offset.x;
+                let renderY = (y * this.tileSize) - this.camera.offset.y;
 
                 context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
+
                 context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
             }
         }
-    }
-
-    addPlayer(playerObj) {
-        this.player = playerObj;
     }
 
     // test
@@ -104,15 +111,17 @@ export default class World {
             obj.position.x = 0;
         }
 
-        if ((obj.position.x - this.offetX) + obj.width >= this.visibleTiles.x * this.tileSize) {
-            obj.position.x = (this.visibleTiles.x * this.tileSize) + this.offetX - obj.width;
-            console.log(this.visibleTiles.x * this.tileSize);
+        if ((obj.position.x - this.camera.offset.x) + obj.width >= this.visibleTiles.x * this.tileSize) {
+            obj.position.x = (this.visibleTiles.x * this.tileSize) + this.camera.offset.x - obj.width;
         }
 
-        if (obj.position.y + obj.height >= 224) {
+        if (obj.position.y <= 0) {
             obj.velocity.y = 0;
-            obj.position.y = 224 - obj.height;
-            obj.isGrounded = true;
+            obj.position.y = 0;
+        }
+
+        if ((obj.position.y - this.camera.offset.y) + obj.height >= this.visibleTiles.y * this.tileSize) {
+            obj.position.y = (this.visibleTiles.y * this.tileSize) + this.camera.offset.y - obj.height;
         }
     }
 
@@ -121,23 +130,24 @@ export default class World {
         this.checkWorldBoundriesCollision(this.player);
 
         // Camera
-        this.camera.posX = this.player.position.x;
-        this.camera.posY = this.player.position.y;
+        this.camera.position.x = this.player.position.x;
+        this.camera.position.y = this.player.position.y;
 
         // Tile offset
-        this.offetX = this.camera.posX - (this.visibleTiles.x / 2) * this.tileSize;
-        this.offetY = this.camera.posY - (this.visibleTiles.y / 2) * this.tileSize;
+        this.camera.offset.x = this.camera.position.x - (this.visibleTiles.x / 2) * this.tileSize;
+        this.camera.offset.y = this.camera.position.y - (this.visibleTiles.y / 2) * this.tileSize;
 
-        if (this.offetX < 0) this.offetX = 0;
-        if (this.offety < 0) this.offetY = 0;
-        if (this.offetX > this.levels[this.activeLevelIndex].width - this.visibleTiles.x) this.offetX = this.levels[this.activeLevelIndex].width - this.visibleTiles.x;
-        if (this.offetY > this.levels[this.activeLevelIndex].height - this.visibleTiles.y) this.offetY = this.levels[this.activeLevelIndex].height - this.visibleTiles.y;
+        if (this.camera.offset.x < 0) this.camera.offset.x = 0;
+        if (this.camera.offset.y < 0) this.camera.offset.y = 0;
+        if (this.camera.offset.x > (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize) this.camera.offset.x  = (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize;
+        if (this.camera.offset.y > (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize) this.camera.offset.y = (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize;
 
-        console.log(`playerX: ${this.player.position.x}, offsetX: ${this.offetX}, playerDrawX: ${(this.player.position.x - this.offetX)}`);
+        // console.log(`playerX: ${this.player.position.x}, offsetX: ${this.camera.offset.x}, playerDrawX: ${(this.player.position.x - this.camera.offset.x)}`);
+        console.log(`cam X: ${this.camera.offset.x}, cam Y: ${this.camera.offset.y}, playerX: ${this.player.position.x}, playerY: ${this.player.position.y}`);
     }
 
     render (context) { 
         this.renderLevel(context);
-        this.player.render(context, this.offetX, this.offetY);
+        this.player.render(context, this.camera.offset.x, this.camera.offset.y);
     }
 }
