@@ -18,6 +18,10 @@ export default class Controller {
             break;
             case 13: event.type === 'keydown' ? this.attack.active = true : this.attack.active = false; //ENTER
             break;
+            case 87: event.type === 'keydown' ? this.up.active = true : this.up.active = false; // W
+            break;
+            case 83: event.type === 'keydown' ? this.down.active = true : this.down.active = false; // W
+            break;
         }
     }
 }

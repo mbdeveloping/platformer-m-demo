@@ -1,12 +1,17 @@
+import Player from './Player';
+
 export default class World {
     constructor(worldNanme) {
         this.name = worldNanme ?? 'Earth',
         this.tileSize = 16,
         this.friction = .8,
         this.gravity = 1,
+        this.visibleTiles = { x: 16, y: 14 },
         this.levels = [ // world places
             // level 1
             {
+                width: 60, // units
+                height: 17, // units
                 tiles: {
                     0: { color:'#d8f4f4' }, // sky
                     1: { color:'#ffffff' }, // cloud
@@ -15,6 +20,9 @@ export default class World {
                     4: { color:'#3e611e' }, // platform
                 },
                 tileMap: [
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,  0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,  0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0],
                             [0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,  0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,  0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0],
                             [0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,  0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,  0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0],
@@ -35,47 +43,65 @@ export default class World {
             // ...
         ],
         this.activeLevelIndex = 0,
-        this.player = null,
-        this.camera = null
+        this.player = new Player(100, 200),
+        this.camera = {
+            position: { x: null, y: null },
+            offset: { x: null, y: null },
+            draw: {
+                min: { x: null, y: null },
+                max: { x: null, y: null }
+            }
+        }
     }
 
     getTile(x, y) {
         return (this.levels[this.activeLevelIndex].tileMap[y] && this.levels[this.activeLevelIndex].tileMap[y][x]) ? this.levels[this.activeLevelIndex].tileMap[y][x] : 0;
     }
 
-    // renderTilesIntoBuffer() {
-    //     this.levels[this.activeLevelIndex].tileMap.forEach((row, rowIndex) => {
-    //         row.forEach((col, colIndex) => {
-    //             const tile = this.levels[this.activeLevelIndex].tiles[col];
-    //             let top = rowIndex * this.tileSize;
-    //             let left = colIndex * this.tileSize;
+    setTile(x, y, tile) {
+        this.levels[this.activeLevelIndex].tileMap[y][x] = tile;
+    }
 
-    //             this.levelBuffer.context.fillStyle = tile.color;
-    //             this.levelBuffer.context.fillRect(left, top, this.tileSize, this.tileSize);
-    //         });
-    //     });
+    // renderLevel(context) {
+    //     for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
+    //         for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
+    //             let renderX = (x * this.tileSize) - this.camera.position.x;
+    //             let renderY = (y * this.tileSize) - this.camera.position.y;
+    //             const tile = this.getTile(x, y);
+
+    //             context.fillStyle = this.levels[this.activeLevelIndex].tiles[tile].color;
+    //             // context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+    //             context.fillRect(Math.round(renderX), Math.round(renderY), this.tileSize, this.tileSize);
+    //         }
+    //     }
+    // }
+
+    // renderLevel(context) {
+    //     for (let y = 0; y < this.visibleTiles.y; y++) {
+    //         for (let x = 0; x < this.visibleTiles.x; x++) {
+    //             const tileID = this.getTile(x + this.camera.offset.x, y + this.camera.offset.y);
+    //             let renderX = (x * this.tileSize);
+    //             let renderY = (y * this.tileSize);
+
+    //             context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
+    //             context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
+    //         }
+    //     }
     // }
 
     renderLevel(context) {
-        for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
-            for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
-                let renderX = (x * this.tileSize) - this.camera.position.x;
-                let renderY = (y * this.tileSize) - this.camera.position.y;
-                const tile = this.getTile(x, y);
+        for (let y = 0; y < this.visibleTiles.y + this.camera.offset.y; y++) {
+            for (let x = 0; x < this.visibleTiles.x + this.camera.offset.x; x++) {
+                // const tileID = this.getTile(x + this.camera.offset.x, y + this.camera.offset.y);
+                const tileID = this.getTile(x, y);
+                let renderX = (x * this.tileSize) - this.camera.offset.x;
+                let renderY = (y * this.tileSize) - this.camera.offset.y;
 
-                context.fillStyle = this.levels[this.activeLevelIndex].tiles[tile].color;
-                // context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
-                context.fillRect(Math.round(renderX), Math.round(renderY), this.tileSize, this.tileSize);
+                context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
+
+                context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
             }
         }
-    }
-
-    addPlayer(playerObj) {
-        this.player = playerObj;
-    }
-
-    addCamera(cameraObj) {
-        this.camera = cameraObj;
     }
 
     // test
@@ -84,24 +110,44 @@ export default class World {
             obj.velocity.x = 0;
             obj.position.x = 0;
         }
-        if (obj.position.y + obj.height >= 224) {
+
+        if ((obj.position.x - this.camera.offset.x) + obj.width >= this.visibleTiles.x * this.tileSize) {
+            obj.position.x = (this.visibleTiles.x * this.tileSize) + this.camera.offset.x - obj.width;
+        }
+
+        if (obj.position.y <= 0) {
             obj.velocity.y = 0;
-            obj.position.y = 224 - obj.height;
-            obj.isGrounded = true;
+            obj.position.y = 0;
+        }
+
+        if ((obj.position.y - this.camera.offset.y) + obj.height >= this.visibleTiles.y * this.tileSize) {
+            obj.position.y = (this.visibleTiles.y * this.tileSize) + this.camera.offset.y - obj.height;
         }
     }
 
-    update() {
-        this.player.update(this.gravity, this.friction);
+    update(step, time) {
+        this.player.update(step, time);
         this.checkWorldBoundriesCollision(this.player);
 
-        this.camera.update();
+        // Camera
+        this.camera.position.x = this.player.position.x;
+        this.camera.position.y = this.player.position.y;
 
-        this.camera.follow(this.player);
+        // Tile offset
+        this.camera.offset.x = this.camera.position.x - (this.visibleTiles.x / 2) * this.tileSize;
+        this.camera.offset.y = this.camera.position.y - (this.visibleTiles.y / 2) * this.tileSize;
+
+        if (this.camera.offset.x < 0) this.camera.offset.x = 0;
+        if (this.camera.offset.y < 0) this.camera.offset.y = 0;
+        if (this.camera.offset.x > (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize) this.camera.offset.x  = (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize;
+        if (this.camera.offset.y > (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize) this.camera.offset.y = (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize;
+
+        // console.log(`playerX: ${this.player.position.x}, offsetX: ${this.camera.offset.x}, playerDrawX: ${(this.player.position.x - this.camera.offset.x)}`);
+        console.log(`cam X: ${this.camera.offset.x}, cam Y: ${this.camera.offset.y}, playerX: ${this.player.position.x}, playerY: ${this.player.position.y}`);
     }
 
     render (context) { 
         this.renderLevel(context);
-        this.player.render(context);
+        this.player.render(context, this.camera.offset.x, this.camera.offset.y);
     }
 }
