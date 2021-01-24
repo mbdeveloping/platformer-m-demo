@@ -101,8 +101,12 @@ export default class World {
     }
 
     update(step, time) {
+        // this.player.velocity.y += 2;
+        
         this.player.update(step, time);
         this.checkWorldBoundriesCollision(this.player);
+
+        // console.log(this.player.velocity.y);
 
         // console.log(`posX: ${this.player.position.x}, coordX: ${Math.floor(this.player.position.x / this.tileSize)}`);
 
@@ -115,7 +119,6 @@ export default class World {
                 this.player.position.x = (Math.floor(this.player.position.x / this.tileSize) + 1) * this.tileSize;
                 this.player.velocity.x = 0;
             }
-
         }
 
         // Right
@@ -131,7 +134,7 @@ export default class World {
         // Top
         if (this.player.velocity.y < 0) {
             if (this.getTile(Math.floor(this.player.position.x / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 ||
-            this.getTile(Math.floor((this.player.position.x + this.player.width) / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2) {
+            this.getTile(Math.floor((this.player.position.x + this.player.width - 0.9) / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2) {
                 console.log('Top colliding!');
                 this.player.position.y = (Math.floor(this.player.position.y / this.tileSize) + 1) * this.tileSize;
                 this.player.velocity.y = 0;
@@ -141,7 +144,7 @@ export default class World {
         // Bottom
         if (this.player.velocity.y > 0) {
             if (this.getTile(Math.floor(this.player.position.x / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2 ||
-            this.getTile(Math.floor((this.player.position.x + this.player.width) / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2) {
+            this.getTile(Math.floor((this.player.position.x + this.player.width - 0.9) / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2) {
                 console.log('Bottom colliding!');
                 this.player.position.y = (Math.floor(this.player.position.y / this.tileSize) + 1) * this.tileSize - this.player.height;
                 this.player.velocity.y = 0;
