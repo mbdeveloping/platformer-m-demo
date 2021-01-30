@@ -43,7 +43,7 @@ export default class World {
             // ...
         ],
         this.activeLevelIndex = 0,
-        this.player = new Player(100, 200),
+        this.player = new Player(10, 50),
         this.camera = {
             position: { x: null, y: null },
             offset: { x: null, y: null }
@@ -163,7 +163,6 @@ export default class World {
         if (this.camera.offset.y < 0) this.camera.offset.y = 0;
         if (this.camera.offset.x > (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize) this.camera.offset.x  = (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize;
         if (this.camera.offset.y > (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize) this.camera.offset.y = (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize;
-
         // console.log(`playerX: ${this.player.position.x}, offsetX: ${this.camera.offset.x}, playerDrawX: ${(this.player.position.x - this.camera.offset.x)}`);
         // console.log(`cam X: ${this.camera.offset.x}, cam Y: ${this.camera.offset.y}, playerX: ${this.player.position.x}, playerY: ${this.player.position.y}`);
     }
