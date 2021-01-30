@@ -1,5 +1,14 @@
 /*
     Temporarly code from World clas has been added here
+    
+    Todo:
+    - Add friction;
+    - Smooth out camera;
+    - Refactor code to seperate classes;
+    - Add player sprite animations;
+    - Add background parallax layers;
+    - Add collectable items;
+    - Add enemies;
 */
 
 import Vector from './math/Vector';
@@ -78,7 +87,6 @@ export default class Game {
                 let renderY = (y * this.tileSize) - this.camera.offset.y;
 
                 context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
-
                 context.fillRect(Math.round(renderX), Math.round(renderY), this.tileSize, this.tileSize);
             }
         }
@@ -101,6 +109,7 @@ export default class Game {
         }
 
         if ((obj.position.y - this.camera.offset.y) + obj.height >= this.visibleTiles.y * this.tileSize) {
+            obj.velocity.y = 0;
             obj.position.y = (this.visibleTiles.y * this.tileSize) + this.camera.offset.y - obj.height;
         }
     }
@@ -132,7 +141,7 @@ export default class Game {
         this.resize();
     }
 
-    update(step, time) {
+    update(step) {
         this.player.update(step);
 
         this.player.velocity.y += this.gravity;
@@ -151,8 +160,8 @@ export default class Game {
             if (this.getTile(Math.floor(newPlayerPosX / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 || 
             this.getTile(Math.floor(newPlayerPosX / this.tileSize), Math.floor((this.player.position.y + this.player.height - this.gravity) / this.tileSize)) === 2) {
                 // console.log('Left colliding!');
-                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize;
                 this.player.velocity.x = 0;
+                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize;
             }
         }
 
@@ -161,8 +170,8 @@ export default class Game {
             if (this.getTile(Math.floor((newPlayerPosX + this.player.width) / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 || 
             this.getTile(Math.floor((newPlayerPosX + this.player.width) / this.tileSize), Math.floor((this.player.position.y + this.player.height - this.gravity) / this.tileSize)) === 2) {
                 // console.log('Right coliding!');
-                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize - this.player.width;
                 this.player.velocity.x = 0;
+                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize - this.player.width;
             }
         }
 
@@ -171,8 +180,8 @@ export default class Game {
             if (this.getTile(Math.floor(newPlayerPosX / this.tileSize), Math.floor(newPlayerPosY / this.tileSize)) === 2 ||
             this.getTile(Math.floor((newPlayerPosX + this.player.width - 0.9) / this.tileSize), Math.floor(newPlayerPosY / this.tileSize)) === 2) {
                 // console.log('Top colliding!');
-                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize;
                 this.player.velocity.y = 0;
+                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize;
             }
         }
 
@@ -182,8 +191,10 @@ export default class Game {
             this.getTile(Math.floor((newPlayerPosX + this.player.width - 0.9) / this.tileSize), Math.floor((newPlayerPosY + this.player.height - this.gravity) / this.tileSize)) === 2) {
                 // console.log('Bottom colliding!');
                 this.player.isGrounded = true;
-                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize - this.player.height;
                 this.player.velocity.y = 0;
+                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize - this.player.height;
+            } else {
+                this.player.isGrounded = false;
             }
         }
         
@@ -208,6 +219,8 @@ export default class Game {
         if (this.camera.offset.y < 0) this.camera.offset.y = 0;
         if (this.camera.offset.x > (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize) this.camera.offset.x  = (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize;
         if (this.camera.offset.y > (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize) this.camera.offset.y = (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize;
+
+        // console.log(this.controller.jump);
     }
 
     render() {

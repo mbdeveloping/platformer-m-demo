@@ -2,26 +2,22 @@ export default class Controller {
     constructor() {
         this.left = { active: false },
         this.right = { active: false },
-        this.jump = { active: false },
+        this.jump = { active: false, pressed: false },
         this.up = { active: false },
         this.down = { active: false },
         this.attack = { active: false }
     }
 
-    resetState() {
-        this.left.active = false;
-        this.right.active = false;
-        this.up.active = false;
-        this.down.active = false;
-    }
-
-    setState(eventType, action) {
+    handleJump(eventType) {
         if (eventType === 'keydown') {
-            this.resetState();
-            action.active = true;
+            if (!this.jump.pressed) {
+                this.jump.pressed = true;
+                this.jump.active = true;
+            }
         } else {
-            action.active = false;
-        }
+            this.jump.pressed = false;
+            this.jump.active = false;
+        }   
     }
 
     keyEvent(event) {
@@ -31,7 +27,7 @@ export default class Controller {
             break;
             case 68: event.type === 'keydown' ? this.right.active = true : this.right.active = false; //D
             break;
-            case 32: event.type === 'keydown' ? this.jump.active = true : this.jump.active = false; //SPACE
+            case 32: this.handleJump(event.type); //SPACE
             break;
             case 13: event.type === 'keydown' ? this.attack.active = true : this.attack.active = false; //ENTER
             break;
