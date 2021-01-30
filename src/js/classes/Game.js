@@ -1,3 +1,4 @@
+import Vector from './math/Vector';
 import Player from './Player';
 
 export default class Game {
@@ -47,8 +48,12 @@ export default class Game {
         this.activeLevelIndex = 0,
         this.player = new Player(10, 100),
         this.camera = {
-            position: { x: null, y: null },
-            offset: { x: null, y: null }
+            position: new Vector(null, null),
+            offset: new Vector(null, null),
+            renderTile: {
+                min: new Vector(null, null),
+                max: new Vector(null, null)
+            }
         }
         this.init()
     }
@@ -62,8 +67,8 @@ export default class Game {
     }
 
     renderLevel(context) {
-        for (let y = 0; y < this.visibleTiles.y + this.camera.offset.y; y++) {
-            for (let x = 0; x < this.visibleTiles.x + this.camera.offset.x; x++) {
+        for (let y = this.camera.renderTile.min.y; y < this.camera.renderTile.max.y; y++) {
+            for (let x = this.camera.renderTile.min.x; x < this.camera.renderTile.max.x; x++) {
                 const tileID = this.getTile(x, y);
                 let renderX = (x * this.tileSize) - this.camera.offset.x;
                 let renderY = (y * this.tileSize) - this.camera.offset.y;
@@ -182,6 +187,11 @@ export default class Game {
         this.player.position.y = newPlayerPosY;
 
         // Camera
+        this.camera.renderTile.min.x = Math.floor(this.camera.offset.x / this.tileSize);
+        this.camera.renderTile.max.x = Math.ceil((this.camera.offset.x / this.tileSize) + this.visibleTiles.x);
+        this.camera.renderTile.min.y = Math.floor(this.camera.offset.y / this.tileSize);
+        this.camera.renderTile.max.y = Math.ceil((this.camera.offset.y / this.tileSize) + this.visibleTiles.y);
+
         this.camera.position.x = Math.round(this.player.position.x);
         this.camera.position.y = Math.round(this.player.position.y);
 
