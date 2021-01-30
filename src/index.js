@@ -5,7 +5,7 @@ import Game from './js/classes/Game';
 
 import './styles/index.scss';
 
-const controller = new Controller();
+export const controller = new Controller();
 const display = new Display();
 display.insertCanvasIntoDOM('#root');
 

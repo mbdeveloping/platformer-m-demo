@@ -31,8 +31,8 @@ export default class World {
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0],
                             [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                             [2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2],
                             [2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2],
@@ -43,56 +43,31 @@ export default class World {
             // ...
         ],
         this.activeLevelIndex = 0,
-        this.player = new Player(100, 200),
+        this.player = new Player(10, 50),
         this.camera = {
             position: { x: null, y: null },
-            offset: { x: null, y: null },
-            draw: {
-                min: { x: null, y: null },
-                max: { x: null, y: null }
-            }
+            offset: { x: null, y: null }
         }
     }
 
     getTile(x, y) {
         return (this.levels[this.activeLevelIndex].tileMap[y] && this.levels[this.activeLevelIndex].tileMap[y][x]) ? this.levels[this.activeLevelIndex].tileMap[y][x] : 0;
+        // if (this.levels[this.activeLevelIndex].tileMap[y] && this.levels[this.activeLevelIndex].tileMap[y][x]) {
+        //     console.log(`Returning tile ${this.levels[this.activeLevelIndex].tileMap[y][x]}`);
+        //     return this.levels[this.activeLevelIndex].tileMap[y][x];
+        // } else {
+        //     console.log('Failed to return tile!');
+        //     return 0;
+        // }
     }
 
     setTile(x, y, tile) {
         this.levels[this.activeLevelIndex].tileMap[y][x] = tile;
     }
 
-    // renderLevel(context) {
-    //     for (let y = this.camera.yMin; y < this.camera.yMax; y++) {
-    //         for (let x = this.camera.xMin; x < this.camera.xMax; x++) {
-    //             let renderX = (x * this.tileSize) - this.camera.position.x;
-    //             let renderY = (y * this.tileSize) - this.camera.position.y;
-    //             const tile = this.getTile(x, y);
-
-    //             context.fillStyle = this.levels[this.activeLevelIndex].tiles[tile].color;
-    //             // context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
-    //             context.fillRect(Math.round(renderX), Math.round(renderY), this.tileSize, this.tileSize);
-    //         }
-    //     }
-    // }
-
-    // renderLevel(context) {
-    //     for (let y = 0; y < this.visibleTiles.y; y++) {
-    //         for (let x = 0; x < this.visibleTiles.x; x++) {
-    //             const tileID = this.getTile(x + this.camera.offset.x, y + this.camera.offset.y);
-    //             let renderX = (x * this.tileSize);
-    //             let renderY = (y * this.tileSize);
-
-    //             context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
-    //             context.fillRect(renderX, renderY, this.tileSize, this.tileSize);
-    //         }
-    //     }
-    // }
-
     renderLevel(context) {
         for (let y = 0; y < this.visibleTiles.y + this.camera.offset.y; y++) {
             for (let x = 0; x < this.visibleTiles.x + this.camera.offset.x; x++) {
-                // const tileID = this.getTile(x + this.camera.offset.x, y + this.camera.offset.y);
                 const tileID = this.getTile(x, y);
                 let renderX = (x * this.tileSize) - this.camera.offset.x;
                 let renderY = (y * this.tileSize) - this.camera.offset.y;
@@ -126,8 +101,55 @@ export default class World {
     }
 
     update(step, time) {
+        // this.player.velocity.y += 2;
+        
         this.player.update(step, time);
         this.checkWorldBoundriesCollision(this.player);
+
+        // console.log(this.player.velocity.y);
+
+        // console.log(`posX: ${this.player.position.x}, coordX: ${Math.floor(this.player.position.x / this.tileSize)}`);
+
+        // Collision
+        // Left
+        if (this.player.velocity.x < 0) {
+            if (this.getTile(Math.floor(this.player.position.x / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 || 
+            this.getTile(Math.floor(this.player.position.x / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2) {
+                console.log('Left colliding!');
+                this.player.position.x = (Math.floor(this.player.position.x / this.tileSize) + 1) * this.tileSize;
+                this.player.velocity.x = 0;
+            }
+        }
+
+        // Right
+        if (this.player.velocity.x > 0) {
+            if (this.getTile(Math.floor((this.player.position.x + this.player.width) / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 || 
+            this.getTile(Math.floor((this.player.position.x + this.player.width) / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2) {
+                console.log('Right coliding!');
+                this.player.position.x = (Math.floor(this.player.position.x / this.tileSize) + 1) * this.tileSize - this.player.width;
+                this.player.velocity.x = 0;
+            }
+        }
+
+        // Top
+        if (this.player.velocity.y < 0) {
+            if (this.getTile(Math.floor(this.player.position.x / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 ||
+            this.getTile(Math.floor((this.player.position.x + this.player.width - 0.9) / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2) {
+                console.log('Top colliding!');
+                this.player.position.y = (Math.floor(this.player.position.y / this.tileSize) + 1) * this.tileSize;
+                this.player.velocity.y = 0;
+            }
+        }
+
+        // Bottom
+        if (this.player.velocity.y > 0) {
+            if (this.getTile(Math.floor(this.player.position.x / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2 ||
+            this.getTile(Math.floor((this.player.position.x + this.player.width - 0.9) / this.tileSize), Math.floor((this.player.position.y + this.player.height - 0.9) / this.tileSize)) === 2) {
+                console.log('Bottom colliding!');
+                this.player.position.y = (Math.floor(this.player.position.y / this.tileSize) + 1) * this.tileSize - this.player.height;
+                this.player.velocity.y = 0;
+            }
+        }
 
         // Camera
         this.camera.position.x = this.player.position.x;
@@ -141,9 +163,8 @@ export default class World {
         if (this.camera.offset.y < 0) this.camera.offset.y = 0;
         if (this.camera.offset.x > (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize) this.camera.offset.x  = (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize;
         if (this.camera.offset.y > (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize) this.camera.offset.y = (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize;
-
         // console.log(`playerX: ${this.player.position.x}, offsetX: ${this.camera.offset.x}, playerDrawX: ${(this.player.position.x - this.camera.offset.x)}`);
-        console.log(`cam X: ${this.camera.offset.x}, cam Y: ${this.camera.offset.y}, playerX: ${this.player.position.x}, playerY: ${this.player.position.y}`);
+        // console.log(`cam X: ${this.camera.offset.x}, cam Y: ${this.camera.offset.y}, playerX: ${this.player.position.x}, playerY: ${this.player.position.y}`);
     }
 
     render (context) { 

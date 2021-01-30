@@ -8,7 +8,24 @@ export default class Controller {
         this.attack = { active: false }
     }
 
+    resetState() {
+        this.left.active = false;
+        this.right.active = false;
+        this.up.active = false;
+        this.down.active = false;
+    }
+
+    setState(eventType, action) {
+        if (eventType === 'keydown') {
+            this.resetState();
+            action.active = true;
+        } else {
+            action.active = false;
+        }
+    }
+
     keyEvent(event) {
+    
         switch (event.keyCode) {
             case 65: event.type === 'keydown' ? this.left.active = true : this.left.active = false; //A
             break;
