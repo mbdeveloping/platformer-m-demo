@@ -67,8 +67,8 @@ export default class Game {
     }
 
     renderLevel(context) {
-        for (let y = this.camera.renderTile.min.y; y < this.camera.renderTile.max.y; y++) {
-            for (let x = this.camera.renderTile.min.x; x < this.camera.renderTile.max.x; x++) {
+        for (let y = this.camera.renderTile.min.y - 1; y < this.camera.renderTile.max.y + 1; y++) {
+            for (let x = this.camera.renderTile.min.x - 1; x < this.camera.renderTile.max.x + 1; x++) {
                 const tileID = this.getTile(x, y);
                 let renderX = (x * this.tileSize) - this.camera.offset.x;
                 let renderY = (y * this.tileSize) - this.camera.offset.y;
