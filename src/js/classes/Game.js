@@ -1,3 +1,7 @@
+/*
+    Temporarly code from World clas has been added here
+*/
+
 import Vector from './math/Vector';
 import Player from './Player';
 
@@ -87,6 +91,7 @@ export default class Game {
         }
 
         if ((obj.position.x - this.camera.offset.x) + obj.width >= this.visibleTiles.x * this.tileSize) {
+            obj.velocity.x = 0;
             obj.position.x = (this.visibleTiles.x * this.tileSize) + this.camera.offset.x - obj.width;
         }
 
