@@ -1,3 +1,17 @@
+/*
+    Temporarly code from World clas has been added here
+    
+    Todo:
+    - Add friction;
+    - Smooth out camera;
+    - Refactor code to seperate classes;
+    - Add player sprite animations;
+    - Add background parallax layers;
+    - Add collectable items;
+    - Add enemies;
+*/
+
+import Vector from './math/Vector';
 import Player from './Player';
 
 export default class Game {
@@ -47,8 +61,12 @@ export default class Game {
         this.activeLevelIndex = 0,
         this.player = new Player(10, 100),
         this.camera = {
-            position: { x: null, y: null },
-            offset: { x: null, y: null }
+            position: new Vector(null, null),
+            offset: new Vector(null, null),
+            renderTile: {
+                min: new Vector(null, null),
+                max: new Vector(null, null)
+            }
         }
         this.init()
     }
@@ -62,14 +80,13 @@ export default class Game {
     }
 
     renderLevel(context) {
-        for (let y = 0; y < this.visibleTiles.y + this.camera.offset.y; y++) {
-            for (let x = 0; x < this.visibleTiles.x + this.camera.offset.x; x++) {
+        for (let y = this.camera.renderTile.min.y - 1; y < this.camera.renderTile.max.y + 1; y++) {
+            for (let x = this.camera.renderTile.min.x - 1; x < this.camera.renderTile.max.x + 1; x++) {
                 const tileID = this.getTile(x, y);
                 let renderX = (x * this.tileSize) - this.camera.offset.x;
                 let renderY = (y * this.tileSize) - this.camera.offset.y;
 
                 context.fillStyle = this.levels[this.activeLevelIndex].tiles[tileID].color;
-
                 context.fillRect(Math.round(renderX), Math.round(renderY), this.tileSize, this.tileSize);
             }
         }
@@ -82,6 +99,7 @@ export default class Game {
         }
 
         if ((obj.position.x - this.camera.offset.x) + obj.width >= this.visibleTiles.x * this.tileSize) {
+            obj.velocity.x = 0;
             obj.position.x = (this.visibleTiles.x * this.tileSize) + this.camera.offset.x - obj.width;
         }
 
@@ -91,6 +109,7 @@ export default class Game {
         }
 
         if ((obj.position.y - this.camera.offset.y) + obj.height >= this.visibleTiles.y * this.tileSize) {
+            obj.velocity.y = 0;
             obj.position.y = (this.visibleTiles.y * this.tileSize) + this.camera.offset.y - obj.height;
         }
     }
@@ -122,7 +141,7 @@ export default class Game {
         this.resize();
     }
 
-    update(step, time) {
+    update(step) {
         this.player.update(step);
 
         this.player.velocity.y += this.gravity;
@@ -141,8 +160,8 @@ export default class Game {
             if (this.getTile(Math.floor(newPlayerPosX / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 || 
             this.getTile(Math.floor(newPlayerPosX / this.tileSize), Math.floor((this.player.position.y + this.player.height - this.gravity) / this.tileSize)) === 2) {
                 // console.log('Left colliding!');
-                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize;
                 this.player.velocity.x = 0;
+                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize;
             }
         }
 
@@ -151,8 +170,8 @@ export default class Game {
             if (this.getTile(Math.floor((newPlayerPosX + this.player.width) / this.tileSize), Math.floor(this.player.position.y / this.tileSize)) === 2 || 
             this.getTile(Math.floor((newPlayerPosX + this.player.width) / this.tileSize), Math.floor((this.player.position.y + this.player.height - this.gravity) / this.tileSize)) === 2) {
                 // console.log('Right coliding!');
-                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize - this.player.width;
                 this.player.velocity.x = 0;
+                newPlayerPosX = (Math.floor(newPlayerPosX / this.tileSize) + 1) * this.tileSize - this.player.width;
             }
         }
 
@@ -161,8 +180,8 @@ export default class Game {
             if (this.getTile(Math.floor(newPlayerPosX / this.tileSize), Math.floor(newPlayerPosY / this.tileSize)) === 2 ||
             this.getTile(Math.floor((newPlayerPosX + this.player.width - 0.9) / this.tileSize), Math.floor(newPlayerPosY / this.tileSize)) === 2) {
                 // console.log('Top colliding!');
-                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize;
                 this.player.velocity.y = 0;
+                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize;
             }
         }
 
@@ -172,8 +191,10 @@ export default class Game {
             this.getTile(Math.floor((newPlayerPosX + this.player.width - 0.9) / this.tileSize), Math.floor((newPlayerPosY + this.player.height - this.gravity) / this.tileSize)) === 2) {
                 // console.log('Bottom colliding!');
                 this.player.isGrounded = true;
-                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize - this.player.height;
                 this.player.velocity.y = 0;
+                newPlayerPosY = (Math.floor(newPlayerPosY / this.tileSize) + 1) * this.tileSize - this.player.height;
+            } else {
+                this.player.isGrounded = false;
             }
         }
         
@@ -182,6 +203,11 @@ export default class Game {
         this.player.position.y = newPlayerPosY;
 
         // Camera
+        this.camera.renderTile.min.x = Math.floor(this.camera.offset.x / this.tileSize);
+        this.camera.renderTile.max.x = Math.ceil((this.camera.offset.x / this.tileSize) + this.visibleTiles.x);
+        this.camera.renderTile.min.y = Math.floor(this.camera.offset.y / this.tileSize);
+        this.camera.renderTile.max.y = Math.ceil((this.camera.offset.y / this.tileSize) + this.visibleTiles.y);
+
         this.camera.position.x = Math.round(this.player.position.x);
         this.camera.position.y = Math.round(this.player.position.y);
 
@@ -193,6 +219,8 @@ export default class Game {
         if (this.camera.offset.y < 0) this.camera.offset.y = 0;
         if (this.camera.offset.x > (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize) this.camera.offset.x  = (this.levels[this.activeLevelIndex].width - this.visibleTiles.x) * this.tileSize;
         if (this.camera.offset.y > (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize) this.camera.offset.y = (this.levels[this.activeLevelIndex].height - this.visibleTiles.y) * this.tileSize;
+
+        // console.log(this.controller.jump);
     }
 
     render() {

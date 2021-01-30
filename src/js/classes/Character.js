@@ -75,7 +75,7 @@ export default class Character {
         if (this.isGrounded) {
             this.isGrounded = false;
             this.velocity.y -= this.jumpDistance;
-            console.log('jumping!');
+            // console.log('jumping!');
         }
         
     }
@@ -99,16 +99,12 @@ export default class Character {
 
         if (this.controller.jump.active) {
             this.jump();
+            this.controller.jump.active = false;
         }
     }
 
     update(step) {
-        // this.velocity.x = 0;
-        // this.velocity.y = 0;
-        // update position
-
         this.playerMovementChecks(step);
-        // this.velocity.y += 1;
 
         this.position.x += this.velocity.x * step;
         this.position.y += this.velocity.y * step;
@@ -118,9 +114,6 @@ export default class Character {
         if (this.velocity.y < -this.velocityMax.y) this.velocity.y = -this.velocityMax.y;
         if (this.velocity.x > this.velocityMax.x) this.velocity.x = this.velocityMax.x;
         if (this.velocity.x < -this.velocityMax.x) this.velocity.x = -this.velocityMax.x;
-
-        // console.log(this.velocity.y);
-        
     }
 
     render(context, offsetX, offsetY) {
