@@ -60,13 +60,13 @@ export default class Character {
     }
 
     stop() {
-        // if (this.state === 'moveRight' || this.state === 'idleRight') {
-        //     this.state = 'idleRight';
-        // }
+        if (this.state === 'moveRight' || this.state === 'idleRight') {
+            this.state = 'idleRight';
+        }
 
-        // if (this.state === 'moveLeft' || this.state === 'idleLeft') {
-        //     this.state = 'idleLeft';
-        // }
+        if (this.state === 'moveLeft' || this.state === 'idleLeft') {
+            this.state = 'idleLeft';
+        }
         
         // this.velocity.setX(0);
         this.acceleration.x = 0;
@@ -124,8 +124,8 @@ export default class Character {
         if (this.velocity.y < -this.velocityMax.y) this.velocity.y = -this.velocityMax.y;
         if (this.velocity.x > this.velocityMax.x) this.velocity.x = this.velocityMax.x;
         if (this.velocity.x < -this.velocityMax.x) this.velocity.x = -this.velocityMax.x;
-
-        // console.log(this.velocity.x);
+        if (this.state === 'idleRight' && this.velocity.x < 0.05) this.velocity.x = 0;
+        if (this.state === 'idleLeft' && this.velocity.x > -0.05) this.velocity.x = 0;
     }
 
     render(context, offsetX, offsetY) {
