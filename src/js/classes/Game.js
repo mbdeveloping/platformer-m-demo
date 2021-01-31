@@ -2,13 +2,13 @@
     Temporarly code from World clas has been added here
     
     Todo:
-    - Add friction;
-    - Smooth out camera;
-    - Refactor code to seperate classes;
+    - Add friction, acceleration;
     - Add player sprite animations;
+    - Smooth out camera;
     - Add background parallax layers;
     - Add collectable items;
     - Add enemies;
+    - Refactor code to seperate classes;
 */
 
 import Vector from './math/Vector';
@@ -20,7 +20,7 @@ export default class Game {
         this.controller = controller,
         // World
         this.tileSize = 16,
-        this.friction = .8,
+        this.friction = .9,
         this.gravity = .4,
         this.visibleTiles = { x: 16, y: 14 },
         this.levels = [ // world places
@@ -142,11 +142,12 @@ export default class Game {
     }
 
     update(step) {
-        this.player.update(step);
-
         this.player.velocity.y += this.gravity;
 
+        this.player.update(step);
+
         // if (this.player.isGrounded) {
+        //     this.player.velocity.x *= this.friction;
         // }
 
         this.checkWorldBoundriesCollision(this.player);

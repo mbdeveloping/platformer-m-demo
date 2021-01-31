@@ -11,11 +11,12 @@ export default class Character {
         this.velocity = new Vector(),
         this.acceleration = new Vector(),
         this.velocityMax = { x: 2, y: 10 },
-        this.speed = .3,
+        this.speed = .1,
         this.state = 'idleRight', //states: idleRight, idleLeft, moveRight, moveLeft, jumpRight, jumpLeft, attackRight, attackLeft, hurt
         this.jumpDistance = 6,
         this.isGrounded = false,
-        this.controller = controller
+        this.controller = controller,
+        this.friction = 0.8
     }
 
     getLeft() { 
@@ -34,16 +35,16 @@ export default class Character {
         return this.position.y + this.height;
     }
 
-    moveLeft(step) {
+    moveLeft() {
         this.state = 'moveLeft';
-        // this.velocity.setX(-this.speed);
-        this.velocity.x -= this.speed;
+        // this.velocity.x -= this.speed;
+        this.acceleration.x -= this.speed;
     }
 
-    moveRight(step) {
+    moveRight() {
         this.state = 'moveRight';
-        // this.velocity.setX(this.speed);
-        this.velocity.x += this.speed;
+        // this.velocity.x += this.speed;
+        this.acceleration.x += this.speed;
     }
 
     // Temp
@@ -59,15 +60,16 @@ export default class Character {
     }
 
     stop() {
-        // if (this.state === 'moveRight' || this.state === 'idleRight') {
-        //     this.state = 'idleRight';
-        // }
+        if (this.state === 'moveRight' || this.state === 'idleRight') {
+            this.state = 'idleRight';
+        }
 
-        // if (this.state === 'moveLeft' || this.state === 'idleLeft') {
-        //     this.state = 'idleLeft';
-        // }
+        if (this.state === 'moveLeft' || this.state === 'idleLeft') {
+            this.state = 'idleLeft';
+        }
         
-        this.velocity.setX(0);
+        // this.velocity.setX(0);
+        this.acceleration.x = 0;
         // this.velocity.setY(0);
     }
 
@@ -104,8 +106,16 @@ export default class Character {
     }
 
     update(step) {
+
         this.playerMovementChecks(step);
 
+        // Add acceleration
+        this.velocity.x += this.acceleration.x;
+
+        // Apply friction
+        this.velocity.x *= this.friction;
+
+        // Update position
         this.position.x += this.velocity.x * step;
         this.position.y += this.velocity.y * step;
 
@@ -114,6 +124,8 @@ export default class Character {
         if (this.velocity.y < -this.velocityMax.y) this.velocity.y = -this.velocityMax.y;
         if (this.velocity.x > this.velocityMax.x) this.velocity.x = this.velocityMax.x;
         if (this.velocity.x < -this.velocityMax.x) this.velocity.x = -this.velocityMax.x;
+        if (this.state === 'idleRight' && this.velocity.x < 0.05) this.velocity.x = 0;
+        if (this.state === 'idleLeft' && this.velocity.x > -0.05) this.velocity.x = 0;
     }
 
     render(context, offsetX, offsetY) {
