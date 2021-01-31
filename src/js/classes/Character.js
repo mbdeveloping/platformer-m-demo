@@ -11,12 +11,12 @@ export default class Character {
         this.velocity = new Vector(),
         this.acceleration = new Vector(),
         this.velocityMax = { x: 2, y: 10 },
-        this.speed = .1,
+        this.speed = 0.05
         this.state = 'idleRight', //states: idleRight, idleLeft, moveRight, moveLeft, jumpRight, jumpLeft, attackRight, attackLeft, hurt
         this.jumpDistance = 6,
         this.isGrounded = false,
         this.controller = controller,
-        this.friction = 0.8
+        this.friction = 0.87
     }
 
     getLeft() { 
@@ -106,7 +106,6 @@ export default class Character {
     }
 
     update(step) {
-
         this.playerMovementChecks(step);
 
         // Add acceleration

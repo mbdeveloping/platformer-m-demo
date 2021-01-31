@@ -2,9 +2,8 @@
     Temporarly code from World clas has been added here
     
     Todo:
-    - Add friction, acceleration;
-    - Add player sprite animations;
     - Smooth out camera;
+    - Add player sprite animations;
     - Add background parallax layers;
     - Add collectable items;
     - Add enemies;
@@ -22,7 +21,7 @@ export default class Game {
         this.tileSize = 16,
         this.friction = .9,
         this.gravity = .4,
-        this.visibleTiles = { x: 16, y: 14 },
+        this.visibleTiles = { x: 20, y: 14 },
         this.levels = [ // world places
             // level 1
             {
